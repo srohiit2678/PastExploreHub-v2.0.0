@@ -54,17 +54,28 @@
             <div class="sidebar-header">
                 <img src="${pageContext.request.contextPath}/assets/images/student.webp" alt="Student Image" class="profile-img">
                 
-                <% UserDTO user = (UserDTO) session.getAttribute("loggedInUser"); %>
-                <% if(user.getName() != null) { %>
-                <h3 id="sname" style="color: rgb; font-weight: bold;">
-                <%= "Hello, "%><%=  user.getName().toUpperCase().substring(0, user.getName().toUpperCase().indexOf(' ')) %></h3>
-                <% } %> 
+               <% 
+    UserDTO user = (UserDTO) session.getAttribute("loggedInUser"); 
+    if (user != null && user.getName() != null) { 
+        String fullName = user.getName().toUpperCase();
+        int spaceIndex = fullName.indexOf(' ');
+%>
+    <h3 id="sname" style="color: rgb; font-weight: bold;">
+        Hello, 
+        <% if (spaceIndex != -1) { %>
+            <%= fullName.substring(0, spaceIndex) %>
+        <% } else { %>
+            <%= fullName %>
+        <% } %>
+    </h3>
+<% } %>
 
             </div>
             <ul class="menu">
                 <li class="active"><a href="/pastexplorehub/user/home"><i class="fas fa-home"></i> Porjects</a></li>
                 <li><a href="/pastexplorehub/user/student-profile"><i class="fas fa-user"></i> Profile</a></li>
                 <li><a href="/pastexplorehub/user/upload-project"><i class="fas fa-upload"></i>  Upload Projects</a></li>
+                <li><a href="/pastexplorehub/user/my-project"><i class="fas fa-chart-line"></i> My Projects</a></li>
                 <li class="logout-item"><a href="/pastexplorehub/user-api/login"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
             </ul>
         </nav>
@@ -77,7 +88,7 @@
                 </div>
                 <input type="text" id="search" placeholder="Search projects...">
             </header>
-            <section class="project-list content-section" id="dashboard-content">
+            <section class="project-list content-section" id="dashboard-content" ></section>
               				<jsp:include page="dashboard.jsp" />
               
                 <!-- Pagination Controls -->

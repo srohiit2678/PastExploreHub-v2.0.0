@@ -35,6 +35,7 @@
 			<p>
 				New User? <a href="register">Sign Up</a>| <a
 					href="forgot_password.jsp">Forgot your password?</a>
+			
 			</p>
 			<%
 			String errorMessage = (String) request.getAttribute("loginError");
@@ -50,6 +51,5 @@
 	</div>
 	<script
 		src="${pageContext.request.contextPath}/assets/js/validation.js"></script>
-
 </body>
 </html>

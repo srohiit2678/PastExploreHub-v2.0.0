@@ -13,6 +13,7 @@ public class Department {
     @Column(unique = true, nullable = false)
     private String deptName;
     private String deptCode;
+    
 	public Long getId() {
 		return id;
 	}

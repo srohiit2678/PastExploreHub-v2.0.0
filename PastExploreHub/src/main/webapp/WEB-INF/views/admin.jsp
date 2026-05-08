@@ -1,11 +1,6 @@
 
 <%@page import="com.pastexplorehub.dto.UserDTO"%>
-<%
-UserDTO userDto = (UserDTO) session.getAttribute("loggedInUser");
-%>
-<%
-String name = userDto.getName();
-%>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -15,11 +10,9 @@ String name = userDto.getName();
 <title>Admin Dashboard - Explore Hub</title>
 <link rel="stylesheet"
 	href="${pageContext.request.contextPath}/assets/css/style.css">
-<link rel="stylesheet"
-	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-<script type="text/javascript"
-	src="${pageContext.request.contextPath}/assets/js/validation.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/assets/js/validation.js"></script>
 
 <style>
 .popup {
@@ -51,6 +44,9 @@ String name = userDto.getName();
 	height: 100%;
 	border: none;
 }
+.close-btn{
+text-align:right
+}
 </style>
 <script>
 	searching();
@@ -64,13 +60,21 @@ String name = userDto.getName();
 					src="${pageContext.request.contextPath}/assets/images/admin.jpeg"
 					alt="Admin Image" class="profile-img">
 
-				<%
-				if (name != null) {
-				%>
-				<h3 id="sname" style="color: rgb(255, 255, 255); font-weight: bold;"><%="Hello, "%><%=name.toUpperCase().substring(0, name.toUpperCase().indexOf(' '))%></h3>
-				<%
-				}
-				%>
+				<% 
+    UserDTO user = (UserDTO) session.getAttribute("loggedInUser"); 
+    if (user != null && user.getName() != null) { 
+        String fullName = user.getName().toUpperCase();
+        int spaceIndex = fullName.indexOf(' ');
+%>
+    <h3 id="sname" style="color: rgb; font-weight: bold;">
+        Hello, 
+        <% if (spaceIndex != -1) { %>
+            <%= fullName.substring(0, spaceIndex) %>
+        <% } else { %>
+            <%= fullName %>
+        <% } %>
+    </h3>
+<% } %>
 
 			</div>
 			<ul class="menu">
@@ -90,16 +94,17 @@ String name = userDto.getName();
 					</button>
 					<h1>Dashboard</h1>
 				</div>
-				<input type="text" id="search" placeholder="Search projects Hear">
+				<input type="text" id="search" placeholder="Search Project From Hear">
 			</header>
 
 			<section class="project-list">
 				<jsp:include page="dashboard.jsp" />
-				<!-- Pagination Controls -->
+				<!-- Pagination Controls 
 				<div class="pagination">
 					<a href="#" class="prev">Previous</a> <span>Page 1 of 5</span> <a
 						href="#" class="next">Next</a>
 				</div>
+				-->
 			</section>
 		</div>
 	</div>

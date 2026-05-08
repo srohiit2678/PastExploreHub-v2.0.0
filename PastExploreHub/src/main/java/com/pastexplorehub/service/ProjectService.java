@@ -13,9 +13,11 @@ public interface ProjectService {
 
 	public List<ProjectDTO>getAllProjectByStatus(Status status);
 	public ProjectDTO getProjectById(Long projectId);
-	public Status updateProjectStatus(Long projectId,String status);
+	public Status updateProjectStatus(Long projectId,String status,String message);
 
 	public List<ProjectDTO> getTeacherPenddingProjects(Long userId);
 	
-	List<AdminActivityDTO> getGuideActivityStats();
+	public List<ProjectDTO> getMyProjects(Long userId);
+	
+	List<AdminActivityDTO> getGuideActivityStatus();
 }

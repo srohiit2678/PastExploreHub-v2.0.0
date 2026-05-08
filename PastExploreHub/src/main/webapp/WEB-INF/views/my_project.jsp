@@ -1,0 +1,205 @@
+<%@page import="com.pastexplorehub.dto.ProjectDTO"%>
+<%@page import="java.util.List"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Teacher Approval - Explore Hub</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/teacher_approve.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .popup {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100vh;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+
+        .popup-content {
+            background: white;
+            width: 70%; height: 80vh;
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .popup-content iframe {
+            flex: 1;
+            width: 100%;
+            border: none;
+        }
+
+        .close-btn {
+            background: crimson;
+            color: white;
+            padding: 8px 16px;
+            font-weight: bold;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        /* Optional: Visual feedback on row status */
+        .approved-row { background-color: #d4edda; }
+        .rejected-row { background-color: #f8d7da; }
+        .pending-row { background-color: #fff3cd; }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <img src="${pageContext.request.contextPath}/assets/images/student.webp" alt="Student" class="profile-img">
+<% String name = (String) session.getAttribute("name"); %>                
+<%
+Integer user_id = (Integer) session.getAttribute("user_id");
+user_id=10;
+%>                
+                <% if(name != null) { %>
+                <h3 id="sname" style="color: rgb; font-weight: bold;"><%= "Hello, "%><%=  name.toUpperCase().substring(0, name.toUpperCase().indexOf(' ')) %></h3>
+                <% } %>
+            </div>
+            <ul class="menu">
+               <li><a href="/pastexplorehub/user/home"><i class="fas fa-home"></i> Porjects</a></li>
+                <li class="active"><a href="/pastexplorehub/user/home/student-profile"><i class="fas fa-user"></i> Profile</a></li>
+                <li><a href="/pastexplorehub/user/upload-project"><i class="fas fa-chart-line"></i> Upload Projects</a></li>
+                <li><a href="/pastexplorehub/user/my-project"><i class="fas fa-chart-line"></i> My Projects</a></li>
+                <li class="logout-item"><a href="/pastexplorehub/user-api/login"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+             </ul>
+        </nav>
+
+        <div class="main-content">
+            <header>
+                <div class="header-left">
+                    <button id="toggle-menu" class="toggle-btn"><i class="fas fa-bars"></i></button>
+                    <h1>Project Approvals</h1>
+                </div>
+                <input type="text" id="search" placeholder="Search projects...">
+            </header>
+
+            <section class="project-list">
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>S.NO.</th>
+                                <th>Project Title</th>
+                                <th>Submission Date</th>
+                                <th>Status</th>
+                                <th>Feedback</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <%
+                                List<ProjectDTO> projectList = (List<ProjectDTO>)session.getAttribute("my-projects");
+                                if (projectList != null) {
+                                    int count = 1;
+                                    for (ProjectDTO project : projectList) {
+                                      if(project.getGuideId().intValue()==user_id || true)  {
+                            %>
+                            <tr data-project-id="<%= project.getProjectId() %>">
+                                <td><%= count++ %></td>
+                                <td><%= project.getTitle() %></td>
+                                <td><%= project.getCreatedAt().getDate() %>-<%= project.getCreatedAt().getMonth() + 1 %>-<%= project.getCreatedAt().getYear() + 1900 %></td>
+                                <td class="status-cell"><%= project.getStatus().toLowerCase() %></td>
+                                <td>
+                                <%=project.getMessage() %>
+       					    </td>
+                                <td>
+                                    <button class="view" onclick="openPopup(<%= project.getProjectId() %>)">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <% 
+                                    } } 
+                                } else {
+                                    response.sendRedirect("pastexplorehub/user-api/login.jsp");
+                                } 
+                            %>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Popup Container -->
+    <div id="popupContainer" class="popup">
+        <div class="popup-content">
+            <div class="close-btn" onclick="closePopup()"> Close</div>
+            <iframe src=""></iframe>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        function openPopup(projectId) {
+            const iframe = document.querySelector("#popupContainer iframe");
+            iframe.src = "/pastexplorehub/project/project-view?id=" + projectId;
+            document.getElementById("popupContainer").style.display = "flex";
+        }
+        function closePopup() {
+            document.getElementById("popupContainer").style.display = "none";
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const statusDropdowns = document.querySelectorAll(".status-dropdown");
+            const tableRows = document.querySelectorAll("tbody tr");
+            const searchInput = document.getElementById("search");
+            const toggleMenu = document.getElementById("toggle-menu");
+            const sidebar = document.querySelector(".sidebar");
+            const mainContent = document.querySelector(".main-content");
+
+            toggleMenu.addEventListener("click", () => sidebar.classList.toggle("active"));
+            mainContent.addEventListener("click", () => {
+                if (window.innerWidth <= 992) sidebar.classList.remove("active");
+            });
+
+            searchInput.addEventListener("keyup", () => {
+                const filter = searchInput.value.toLowerCase();
+                tableRows.forEach(row => {
+                    const title = row.children[1].textContent.toLowerCase();
+                    row.style.display = title.includes(filter) ? "" : "none";
+                });
+            });
+
+            statusDropdowns.forEach(dropdown => {
+                const contextPath = "<%= request.getContextPath() %>";
+                dropdown.addEventListener("change", function () {
+            alert("your Action is saved will show you effect on next visite");
+                    const row = this.closest("tr");
+                    const projectId = row.getAttribute("data-project-id");
+                    const newStatus = this.value;
+                    const message =row.querySelector(".status-message").value;
+                    console.log(projectId);
+                    console.log(newStatus);
+                    console.log(status-message);
+                    
+                    row.classList.remove("approved-row", "rejected-row", "pending-row");
+                    row.classList.add(newStatus + "-row");
+
+                    // AJAX call
+                    fetch(contextPath+"/pastexplorehub/project/update-status", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded"
+                        },
+                        body: `projectId=`+projectId+`&newStatus=`+newStatus +`&message=`+message
+                    })
+                    .then(response => response.text())
+                    .then(data => console.log("Response:", data))
+                    .catch(error => console.error("Error:", error));
+                });
+            });
+        });
+    </script>
+</body>
+</html>

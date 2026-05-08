@@ -8,116 +8,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Insights | PastExploreHub</title>
+    <title>Admin Activity | PastExploreHub</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
-    <style>
-        :root {
-            --primary: #4361ee;
-            --success: #4cc9f0;
-            --warning: #f72585;
-            --bg: #f8f9fd;
-            --sidebar-bg: #1e1e2d;
-            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            --transition: all 0.3s ease;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background-color: var(--bg); color: #333; overflow-x: hidden; }
-
-        .dashboard-container { display: flex; min-height: 100vh; }
-
-        /* --- Sidebar --- */
-        .sidebar {
-            width: 260px;
-            background: var(--sidebar-bg);
-            color: #fff;
-            padding: 20px;
-            transition: var(--transition);
-            z-index: 1000;
-        }
-
-        .sidebar-header { text-align: center; padding-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .profile-img { width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--primary); margin-bottom: 15px; object-fit: cover; }
-        
-        .menu { list-style: none; margin-top: 30px; }
-        .menu li { margin-bottom: 15px; }
-        .menu a { 
-            color: #a2a3b7; text-decoration: none; display: flex; align-items: center; 
-            padding: 12px 15px; border-radius: 10px; transition: var(--transition);
-        }
-        .menu li.active a, .menu a:hover { background: var(--primary); color: #fff; transform: translateX(5px); }
-        .menu i { margin-right: 15px; font-size: 1.1rem; }
-
-        /* --- Main Content --- */
-        .main-content { flex: 1; padding: 30px; transition: var(--transition); }
-        
-        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
-        .header-actions { display: flex; gap: 10px; }
-        
-        .action-btn { 
-            background: #fff; border: 1px solid #ddd; padding: 8px 15px; 
-            border-radius: 8px; cursor: pointer; font-size: 0.85rem; 
-            display: flex; align-items: center; gap: 8px; transition: var(--transition);
-        }
-        .action-btn:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
-
-        /* --- New: Filter Bar --- */
-        .filter-bar {
-            background: #fff; padding: 15px 25px; border-radius: 16px; 
-            box-shadow: var(--card-shadow); margin-bottom: 30px;
-            display: flex; justify-content: space-between; align-items: center;
-            gap: 20px;
-        }
-        .filter-group { display: flex; align-items: center; gap: 10px; }
-        select { padding: 8px 12px; border-radius: 8px; border: 1px solid #ddd; outline: none; background: #f9f9f9; cursor: pointer; }
-
-        /* --- Stat Cards --- */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 40px; }
-        .stat-card { 
-            background: #fff; padding: 25px; border-radius: 16px; box-shadow: var(--card-shadow);
-            display: flex; align-items: center; transition: var(--transition);
-        }
-        .stat-card:hover { transform: translateY(-5px); }
-        .stat-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-right: 15px; font-size: 1.5rem; }
-        .icon-blue { background: #e0e7ff; color: var(--primary); }
-        .icon-pink { background: #ffe4f0; color: var(--warning); }
-        .icon-cyan { background: #e0f7ff; color: var(--success); }
-
-        /* --- Table Container --- */
-        .table-container { background: #fff; border-radius: 16px; padding: 25px; box-shadow: var(--card-shadow); }
-        .table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .search-box { position: relative; }
-        .search-box input { padding: 10px 15px 10px 40px; border-radius: 10px; border: 1px solid #ddd; width: 250px; outline: none; }
-        .search-box i { position: absolute; left: 15px; top: 12px; color: #aaa; }
-
-        table { width: 100%; border-collapse: collapse; text-align: left; }
-        th { padding: 15px; color: #7e8299; font-weight: 600; border-bottom: 1px solid #f1f1f4; font-size: 0.9rem; }
-        td { padding: 18px 15px; border-bottom: 1px solid #f1f1f4; vertical-align: middle; font-size: 0.9rem; }
-        
-        .progress-container { width: 100%; background: #eee; border-radius: 10px; height: 8px; margin-top: 5px; overflow: hidden; }
-        .progress-bar { height: 100%; border-radius: 10px; background: var(--primary); transition: width 0.5s ease; }
-
-        .badge { padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; }
-        .badge-approved { background: #e8fff3; color: #50cd89; }
-        .badge-pending { background: #fff8dd; color: #ffc700; }
-        .badge-rejected { background: #fff5f8; color: #f1416c; }
-        
-        /* Performance Tag */
-        .perf-tag { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; margin-left: 5px; }
-        .high { background: #50cd89; color: #fff; }
-        .mid { background: #ffc700; color: #fff; }
-
-        @media (max-width: 992px) {
-            .sidebar { position: fixed; left: -260px; height: 100vh; }
-            .sidebar.active { left: 0; }
-            .main-content { width: 100%; }
-            .filter-bar { flex-direction: column; align-items: flex-start; }
-        }
-    </style>
+   <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/admin_activity.css">
 </head>
 <body>
 				<% UserDTO user = (UserDTO)session.getAttribute("loggedInUser"); 
@@ -147,7 +43,7 @@
                 <li><a href="/pastexplorehub/user/home"><i class="fas fa-home"></i> Projects</a></li>
                 <li><a href="/pastexplorehub/user/admin-profile"><i class="fas fa-user"></i> Profile</a></li>
                 <li class="active"><a href="/pastexplorehub/user/admin-activity"><i class="fas fa-chart-line"></i> View Activity</a></li>
-                <li ><a href="/pastexplorehub/admin/actions/addDepartment"><i class="fas fa-add"></i> Actions</a></li>
+                <li ><a href="/pastexplorehub/user/actions/addDepartment"><i class="fas fa-add"></i> Actions</a></li>
                 <li style="margin-top: auto;"><a href="/pastexplorehub/user-api/login"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
             </ul>
         </nav>

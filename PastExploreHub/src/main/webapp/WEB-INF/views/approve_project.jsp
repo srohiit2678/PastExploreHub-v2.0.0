@@ -90,6 +90,7 @@ user_id=10;
                                 <th>Project Title</th>
                                 <th>Submission Date</th>
                                 <th>Status</th>
+                                <th>Feedback</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -112,6 +113,9 @@ user_id=10;
                                         <option value="rejected">Rejected</option>
                                     </select>
                                 </td>
+                                <td>
+        <input type="text" class="status-message" placeholder="Add a note..." style="width: 100%; padding: 5px; border: 1px solid #ddd; border-radius: 4px;">
+    </td>
                                 <td>
                                     <button class="view" onclick="openPopup(<%= project.getProjectId() %>)">
                                         <i class="fas fa-eye"></i>
@@ -178,8 +182,10 @@ user_id=10;
                     const row = this.closest("tr");
                     const projectId = row.getAttribute("data-project-id");
                     const newStatus = this.value;
+                    const message =row.querySelector(".status-message").value;
                     console.log(projectId);
                     console.log(newStatus);
+                    console.log(status-message);
                     
                     row.classList.remove("approved-row", "rejected-row", "pending-row");
                     row.classList.add(newStatus + "-row");
@@ -190,7 +196,7 @@ user_id=10;
                         headers: {
                             "Content-Type": "application/x-www-form-urlencoded"
                         },
-                        body: `projectId=`+projectId+`&newStatus=`+newStatus
+                        body: `projectId=`+projectId+`&newStatus=`+newStatus +`&message=`+message
                     })
                     .then(response => response.text())
                     .then(data => console.log("Response:", data))

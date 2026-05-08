@@ -1,10 +1,7 @@
 
 <%@page import="com.pastexplorehub.dto.UserDTO"%>
 
-<%
-UserDTO userDto = (UserDTO) session.getAttribute("loggedInUser");
-String name = userDto.getName();
-%>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -58,9 +55,21 @@ String name = userDto.getName();
             <div class="sidebar-header">
                         <img src="${pageContext.request.contextPath}/assets/images/teacher.jpeg" alt="Student Image" class="profile-img">
                 
-                <% if(name != null) { %>
-                <h3 id="sname" style="color: rgb; font-weight: bold;"><%= "Hello, "%><%=  name.toUpperCase().substring(0, name.toUpperCase().indexOf(' ')) %></h3>
-                <% } %>
+               <% 
+    UserDTO user = (UserDTO) session.getAttribute("loggedInUser"); 
+    if (user != null && user.getName() != null) { 
+        String fullName = user.getName().toUpperCase();
+        int spaceIndex = fullName.indexOf(' ');
+%>
+    <h3 id="sname" style="color: rgb; font-weight: bold;">
+        Hello, 
+        <% if (spaceIndex != -1) { %>
+            <%= fullName.substring(0, spaceIndex) %>
+        <% } else { %>
+            <%= fullName %>
+        <% } %>
+    </h3>
+<% } %>
             </div>
             <ul class="menu">
                 <li><a href="/pastexplorehub/user/home"><i class="fas fa-home"></i> Porjects</a></li>

@@ -173,34 +173,21 @@
 
    
 
-        <%
-	       List<ProjectComment> comments =  (List<ProjectComment>)session.getAttribute("project-comments");
+        <% List<ProjectComment> comments =  (List<ProjectComment>)session.getAttribute("project-comments");
         	if(!comments.isEmpty()){ %>
-
-        	 <div id="commentsContainer">        		
-        	 
-    			
-        	 
-        	 <%
-
-        	 for(ProjectComment comment : comments){
-        			%>
-<div class="comment-box">
+       <div id="commentsContainer">        		
+            	 <% for(ProjectComment comment : comments){ %>
+			<div class="comment-box">
                 <span class="comment-user" ><%=comment.getUser().getName() %></span>
                 <span class="comment-user" >[<%= comment.getUser().getEnrollId()%>]</span>
                 <span class="comment-date" ><%=comment.getDate()%></span>
                 <p class="comment-text" ><%=comment.getMessage() %></p>
-          
             </div>
-              <%
-            }
-            %>
-          
-        <% }else{ %>
-            <p style="color: var(--light-text); font-size: 14px;">No comments yet. Start the discussion!</p>
-        <% } %>        
+              <% } %>
+             <% }else{ %>
+                <p style="color: var(--light-text); font-size: 14px;">No comments yet. Start the discussion!</p>
+             <% } %>        
     </div>
-
     <div class="comment-form" style="margin-top: 20px;">
         <form action="/pastexplorehub/project/add-comment" method="post">
             <input type="hidden" name="projectId" value="<%= project.getProjectId() %>">
@@ -219,7 +206,7 @@
         <% } 
     } catch(Exception e) { e.printStackTrace(); } %>
     </div>
-
+    
     <script>
         let currentSlide = 0;
 

@@ -51,6 +51,8 @@ public class ProjectDTO {
     private Long pdfFileId;
     private String base64PDF;
     
+    private String message;
+    
     // Helper fields for mapping
     private Long studentId; // This should be populated from Session in the Controller
 
@@ -235,6 +237,14 @@ public class ProjectDTO {
 
 	
 	
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
 	@Override
 	public String toString() {
 		return "ProjectDTO [projectId=" + projectId + ", title=" + title + ", description=" + description + ", guideId="
@@ -243,7 +253,7 @@ public class ProjectDTO {
 				+ ", teamMemberEnrollId=" + teamMemberEnrollId + ", projectLink=" + projectLink + ", status=" + status
 				+ ", projectImages=" + Arrays.toString(projectImages) + ", projectCode=" + projectCode
 				+ ", base64Images=" + base64Images + ", pdfFileName=" + pdfFileName + ", pdfFileId=" + pdfFileId
-				+ ", base64PDF=" + base64PDF + ", studentId=" + studentId + ", createdAt=" + createdAt + "]";
+				+ ", base64PDF=" + base64PDF + ", studentId=" + studentId + ", createdAt=" + createdAt + ", message ="+ message +"]";
 	}
 
 	public ProjectDTO projectToProjectDTO(Project project) {
@@ -254,7 +264,7 @@ public class ProjectDTO {
 		this.setGuideName(project.getGuide().getName());
 		this.setDepartmentId(project.getDepartment().getId());
 		this.setTechStack(project.getTechStack());
-		
+		this.setMessage(project.getMessage());
 		this.setLeadName(project.getStudent().getName());
 		this.setLeadEnrollId(project.getLeadEnrollId());
 		
