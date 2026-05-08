@@ -4,6 +4,7 @@ import com.pastexplorehub.dto.TeacherDTO;
 import com.pastexplorehub.dto.UserDTO;
 import com.pastexplorehub.entity.Department;
 import com.pastexplorehub.entity.User;
+import com.pastexplorehub.exception.InvalidCredentialsException;
 import com.pastexplorehub.model.UserRole;
 import com.pastexplorehub.repository.DepartmentRepository;
 import com.pastexplorehub.repository.UserRepository;
@@ -26,12 +27,12 @@ public class UserServiceImpl implements UserService {
     public User registerUser(UserDTO dto) throws Exception {
         // 1. Validation
         if (!dto.getEnrollId().contains("0832")) {
-            throw new Exception("Enrollment ID must contain 0832");
+            throw new InvalidCredentialsException("Enrollment ID must contain 0832");
         }
 
         // 2. Map DTO to Entity
         User user = new User();
-        user.setName(dto.getName());
+        user.setName(dto.getName().length()<=5?dto.getName()+" _":dto.getName());
         user.setEnrollId(dto.getEnrollId());
         user.setEmail(dto.getEmail());
         user.setPassword(dto.getPassword());
@@ -56,6 +57,10 @@ public class UserServiceImpl implements UserService {
         }
         UserDTO userDto = new UserDTO(user);
         return userDto;
+    }
+    
+    public void hello() {
+    	System.out.println("hello from services");
     }
     
     @Override

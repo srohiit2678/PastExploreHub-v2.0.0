@@ -61,7 +61,7 @@ function validateLogin() {
     
     // Note: Use .includes() for JavaScript, not .contains()
     if (enroll_id === "" || password === "" || !enroll_id.includes("0832")) {
-        alert("Invalid Enrollment ID or Password! (ID must contain 0832)");
+      alert("Invalid Enrollment ID or Password! (ID must contain 0832)");
         return false;
     }
     return true;

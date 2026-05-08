@@ -38,7 +38,7 @@ public class ProjectServiceImpl implements ProjectService {
         project.setLeadEnrollId(dto.getLeadEnrollId());
         project.setStatus(Status.PENDING);
 
-        System.out.println();
+     
         // 2. Fetch Managed Entities from DB
         User student = userRepo.findByEnrollId(dto.getLeadEnrollId())
                 .orElseThrow(() -> new Exception("Logged-in Student not found"));
@@ -104,10 +104,10 @@ public class ProjectServiceImpl implements ProjectService {
     }
     
     @Transactional
-    public Status updateProjectStatus(Long projectId,String status) {
+    public Status updateProjectStatus(Long projectId,String status,String message) {
     	    Status newStatus = Status.valueOf(status.toUpperCase());
       	
-    try {  projectRepo.updateProjectStatus(projectId, newStatus);}
+    try {  projectRepo.updateProjectStatus(projectId, newStatus,message);}
     catch(Exception e) {
     	System.out.println("issue is this : "+e);
     }
@@ -125,8 +125,20 @@ public class ProjectServiceImpl implements ProjectService {
 		return guideProjects;
 	}  
 	
-	public List<AdminActivityDTO> getGuideActivityStats(){
+	public List<AdminActivityDTO> getGuideActivityStatus(){
 		
 		return projectRepo.getGuideActivityStats();
+	}
+
+	@Override
+	public List<ProjectDTO> getMyProjects(Long userId) {
+		List<Project> projects = projectRepo.findByStudent_UserId(userId);
+		
+		List<ProjectDTO> myProjects = new ArrayList<>();
+		
+		if(projects!=null) {
+		 myProjects = projects.stream().map(project-> new ProjectDTO().projectToProjectDTO(project)).collect(Collectors.toList());
+		}
+		return myProjects;
 	}
 }

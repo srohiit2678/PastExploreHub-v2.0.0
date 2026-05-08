@@ -9,26 +9,38 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.pastexplorehub.dto.AdminActivityDTO;
 import com.pastexplorehub.dto.ProjectDTO;
+import com.pastexplorehub.dto.TeacherDTO;
 import com.pastexplorehub.dto.UserDTO;
+import com.pastexplorehub.exception.GlobalExceptionHandler;
 import com.pastexplorehub.model.Status;
 import com.pastexplorehub.service.DepartmentService;
 import com.pastexplorehub.service.ProjectService;
+import com.pastexplorehub.service.UserService;
+
 import jakarta.servlet.http.HttpSession;
 
 @RequestMapping("/pastexplorehub/user")
 @Controller // Use @Controller to return JSPs
 public class PageController {
 
+    private final GlobalExceptionHandler globalExceptionHandler;
+
 	@Autowired
 	private ProjectService projectService;
 	
 	@Autowired
+	private UserService userService;
+	
+	@Autowired
 	private DepartmentService departmentService;
+
+    PageController(GlobalExceptionHandler globalExceptionHandler) {
+        this.globalExceptionHandler = globalExceptionHandler;
+    }
 
 	@GetMapping("/home")
 	public String showHome(HttpSession session) {
 		UserDTO user = (UserDTO) session.getAttribute("loggedInUser");
-
 		List<ProjectDTO> projects = projectService.getAllProjectByStatus(Status.APPROVED);
 		session.setAttribute("projects", projects);
 		if (user == null)
@@ -41,7 +53,6 @@ public class PageController {
 		UserDTO user = (UserDTO) session.getAttribute("loggedInUser");
 		if (user == null)
 			return "redirect:/pastexplorehub/user-api/login";
-
 		String role = user.getRole();
 		// FIX: Use equalsIgnoreCase to avoid Case-Sensitivity issues
 		if (role.equalsIgnoreCase("student"))
@@ -56,10 +67,33 @@ public class PageController {
 	public String showUploadPage(HttpSession session) {
 		UserDTO user = (UserDTO) session.getAttribute("loggedInUser");
 		// FIX: Allow students in, block everyone else
+		System.out.println("Hello");
+		if (user.getRole().toLowerCase().equals("student")) {
+			List<TeacherDTO> teachersList = userService.getAllTeachers();
+			System.out.println(teachersList);
+			session.setAttribute("teachersAsGuid", teachersList);
+		}
 		if (user == null || !user.getRole().toString().equalsIgnoreCase("student")) {
 			return "redirect:/pastexplorehub/user-api/login";
 		}
 		return "upload_project";
+	}
+	
+	@GetMapping("/my-project")
+	public String showMyProject(HttpSession session) {
+		UserDTO user = (UserDTO) session.getAttribute("loggedInUser");
+		
+		// FIX: Allow students in, block everyone else
+		if (user == null || !user.getRole().toString().equalsIgnoreCase("student")) {
+			System.out.print(user.getRole());
+
+			return "redirect:/pastexplorehub/user-api/login";
+		}
+		
+		List<ProjectDTO>myProjects = projectService.getMyProjects(user.getUserId());
+		
+		session.setAttribute("my-projects", myProjects);
+		return "my_project";
 	}
 
 	@GetMapping("/student")
@@ -109,7 +143,7 @@ public class PageController {
 		List<String> depts = departmentService.getAllDepartmentName();
 	    model.addAttribute("deptList", depts);
 		
-	     List<AdminActivityDTO> activityStats= projectService.getGuideActivityStats();
+	     List<AdminActivityDTO> activityStats= projectService.getGuideActivityStatus();
 	    model.addAttribute("activityStats", activityStats);
 		
 	    

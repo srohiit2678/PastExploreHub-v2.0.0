@@ -30,6 +30,7 @@
                 <li><a href="/pastexplorehub/user/home"><i class="fas fa-home"></i> Porjects</a></li>
                 <li class="active"><a href="/pastexplorehub/user/home/student-profile"><i class="fas fa-user"></i> Profile</a></li>
                 <li><a href="/pastexplorehub/user/upload-project"><i class="fas fa-chart-line"></i> Upload Projects</a></li>
+                <li><a href="/pastexplorehub/user/my-project"><i class="fas fa-chart-line"></i> My Projects</a></li>
                 <li class="logout-item"><a href="/pastexplorehub/user-api/login"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
             </ul>
         </nav>

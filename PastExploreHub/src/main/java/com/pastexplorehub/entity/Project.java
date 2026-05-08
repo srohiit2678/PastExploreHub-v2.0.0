@@ -50,6 +50,8 @@ public class Project {
     private List<ProjectFile> projectFiles;
 
     
+    @Column
+    private String message;
     
     
     
@@ -155,6 +157,17 @@ public class Project {
 
 	public void setProjectFiles(List<ProjectFile> projectFiles) {
 		this.projectFiles = projectFiles;
+	}
+
+	
+
+    
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
 	}
 
 	@Override

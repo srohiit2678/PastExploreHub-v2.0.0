@@ -27,8 +27,8 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     Project findByProjectId(Long id);
     
      @Modifying
-     @Query("UPDATE Project p SET p.status = :status WHERE p.projectId = :id")
-     void updateProjectStatus(@Param("id") Long id, @Param("status") Status status);
+     @Query("UPDATE Project p SET p.status = :status, p.message=:message WHERE p.projectId = :id")
+     void updateProjectStatus(@Param("id") Long id, @Param("status") Status status, @Param("message") String message);
    
 	public List<Project> findByGuideUserIdAndStatus(Long guideUserId,Status staus);
 	

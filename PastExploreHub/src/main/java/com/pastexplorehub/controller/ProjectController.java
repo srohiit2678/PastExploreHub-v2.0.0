@@ -45,6 +45,7 @@ public class ProjectController {
 		}
 	}
 
+	
 	@GetMapping("/project-view")
 	public String fatchProject(@RequestParam("id") Long id, HttpSession session) {
 
@@ -65,10 +66,13 @@ public class ProjectController {
 	}
 
 	@PostMapping("/update-status")
-	public String updateStatus(@RequestParam("projectId") Long projectId, @RequestParam("newStatus") String newStatus,  RedirectAttributes redirectAttributes) {
+	public String updateStatus(@RequestParam("projectId") Long projectId, 
+								@RequestParam("newStatus") String newStatus,
+								@RequestParam("message") String message,
+								RedirectAttributes redirectAttributes) {
+	
 	    try {
-	    	System.out.println("this");
-	    	newStatus = projectService.updateProjectStatus(projectId, newStatus).toString();
+	    	newStatus = projectService.updateProjectStatus(projectId, newStatus,message).toString();
 	    	System.out.println(newStatus);
 	        redirectAttributes.addFlashAttribute("message", "Project status updated to " + newStatus);
 	    } catch (Exception e) {
